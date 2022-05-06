@@ -5,7 +5,7 @@ myapp.use(express.json()); // faz com que minha API entenda objetos json
 
 const Medicamentos = require('../Models/tbremedio');
 
-myapp.get("/remedios", function(req, res){
+async function buscarMedicamentos(req, res){
 
     // Faz uma selecao de todos os registros da minha tabela
     Medicamentos.findAll().then((registros) => {
@@ -19,12 +19,11 @@ myapp.get("/remedios", function(req, res){
             colecao.push(info);
         }
 
-        console.log(colecao)
         return res.status(200).json(colecao);
     })
-})
+}
 
-myapp.post("/nv-remedio", async (req, res) => {
+async function novoMedicamento(req, res){
 
     // atributos do meu objeto JSON
     const {remedio} = req.body;
@@ -43,19 +42,18 @@ myapp.post("/nv-remedio", async (req, res) => {
 
     let caixote = informacoes;
     return res.status(201).json(caixote);
-});
+};
 
-myapp.delete('/del-remedio/:id', async function(req, res){
+async function apagarMedicamento(req, res){
 
     // a tabela medicamentos filtrará o registro que contem o id informado, logo após ele é apagado e uma mensagem é enviada informando que foi excluido com exito
-    
     await Medicamentos.destroy({ where: {id_medicamento: req.params.id} }).then(function(){
 
         return res.status(200).json("Deletado com sucesso!");
-    })
-})
+    });
+}
 
-myapp.put('/update/:id', async function(req, res){
+async function updateMedicamento(req, res){
 
     // atributos do meu objeto JSON
     const {remedio} = req.body;
@@ -83,6 +81,7 @@ myapp.put('/update/:id', async function(req, res){
     Medicamentos.findAll({where: {id_medicamento: req.params.id}}).then((data) => {
 
         return res.status(200).json(data);
-    })
-        
-})
+    })      
+}
+
+module.exports = { buscarMedicamentos, novoMedicamento, apagarMedicamento, updateMedicamento };
