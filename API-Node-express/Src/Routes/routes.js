@@ -6,7 +6,7 @@ const { body, param } = require('express-validator');
 // Rotas para a tabela Medicamentos
 
 const controlRemedio = require('../Api/Controller/remedio.js');
-const validar = require('../Api/Services/validar');
+const validar = require('../Api/Services/remedioServices');
 
 myapp.get('/remedios', controlRemedio.buscarMedicamentos);
 
@@ -39,15 +39,18 @@ myapp.delete('/del-remedio/:id',
 // Rotas para a tabela Farmaceuticos
 
 const controlFarmaceutico = require('../Api/Controller/farmaceuticos.js');
+const validacoes = require('../Api/Services/farmaceuticoServices');
 
 myapp.get('/buscar-farmaceuticos', controlFarmaceutico.buscarFarmaceuticos);
 
 myapp.post('/reg-farmaceutico', 
     [
-        body('farmaceutico').isLength({min: 4}).withMessage('é preciso informar um nome'),
-        body('cpf').isLength({min: 12, max: 15}).withMessage('cpf inválido'),
-        body('rg').isLength({min: 9, max: 12}).withMessage('rg inválido'),
-        body('nascimento').isDate({strictMode: false, delimiters: ['/']}).withMessage('data de nascimento inválida'),
-        body('telefone').isMobilePhone(['pt-BR'], {strictMode: true}).withMessage('numero de telefone invalido')
+        body().custom((data) => { return validacoes.validarCampos(data) }).withMessage(),
     ],
     controlFarmaceutico.registrarFarmaceutico)
+
+myapp.delete('/apagar-farmaceutico/:id', 
+    [
+        param('id').custom((data) => { return validacoes.buscarRegistro(data)}).withMessage()
+    ],
+    controlFarmaceutico.deletarFarmaceutco);

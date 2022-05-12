@@ -17,8 +17,12 @@ async function buscarFarmaceuticos(req, res){
 async function registrarFarmaceutico(req, res){
 
     const validar = validationResult(req);
-    if(!validar.isEmpty())
-        return res.status(404).json({erro: validar.array()})
+    if(!validar.isEmpty()){
+        const errors = [];
+        validar.array().forEach(x => errors.push(x.msg))
+        
+        return res.status(400).json({erro: errors, codigo: 400})
+    }
     else{
         const {farmaceutico} = req.body;
         const {cpf} = req.body;
@@ -40,4 +44,22 @@ async function registrarFarmaceutico(req, res){
     }
 }
 
-module.exports = { registrarFarmaceutico, buscarFarmaceuticos };
+async function deletarFarmaceutco(req, res){
+
+    const validar = validationResult(req);
+
+    if(!validar.isEmpty()){
+        const errors = [];
+        validar.array().forEach(x => errors.push(x.msg));
+
+        return res.status(400).json({error: errors, codigo: 400});
+    }
+    else{
+        await tbFarmaceuticos.destroy({ where: {id_farmaceutico: req.params.id}}).then(() => {
+
+            return res.status(200).json({mensagem: 'Deletado com sucesso!', codigo: 200});
+        })
+    }
+}
+
+module.exports = { registrarFarmaceutico, buscarFarmaceuticos, deletarFarmaceutco };
