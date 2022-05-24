@@ -10,29 +10,24 @@ const validar = require('../Api/Services/remedioServices');
 
 myapp.get('/remedios', controlRemedio.buscarMedicamentos);
 
-myapp.post('/nv-remedio', 
+myapp.post('/novo-remedio', 
     [
         // Validações da minha rota
-        body('remedio').custom((data) => {return validar.validarNome(data)}).withMessage(),
-        body('preco').custom((data) => {return validar.validarPreco(data)}).withMessage(),
-        body('descricao').custom((data) => {return validar.validarDescricao(data)}).withMessage(),
-        body('registro').custom((data) => {return validar.validarNrRegistro(data)}).withMessage()
+        body().custom((data) => { return validar.validarCampoRemedios(data) }).withMessage()
     ],
     controlRemedio.novoMedicamento);
 
-
 myapp.put('/att-remedio/:id', 
     [
-        param('id').custom((data) => {return validar.validarRegistro(data)}).withMessage(),
-        body('remedio').custom((data) => {return validar.validarNome(data)}).withMessage(),
-        body('preco').custom((data) => {return validar.validarPreco(data)}).withMessage(),
-        body('descricao').custom((data) => {return validar.validarDescricao(data)}).withMessage(),
-        body('registro').custom((data) => {return validar.validarNrRegistro(data)}).withMessage()
+        param('id').custom((data) => { return validar.validarRegistro(data) }).withMessage(),
+        body().custom((data) => { return validar.validarCampoRemedios(data) }).withMessage()
     ],
     controlRemedio.updateMedicamento);
 
-myapp.delete('/del-remedio/:id', 
-    param('id').custom((data) => {return validar.validarRegistro(data)}).withMessage(),
+myapp.delete('/del-remedio/:id',
+    [
+        param('id').custom((data) => {return validar.validarRegistro(data)}).withMessage()
+    ],
     controlRemedio.apagarMedicamento);
 
     

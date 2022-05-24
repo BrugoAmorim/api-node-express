@@ -13,36 +13,25 @@ async function validarRegistro(req){
     });
 }
 
-async function validarNome(nome){
+async function validarCampoRemedios(req){
 
-    if(validador.isLength(nome, {min: 4}) === false)
-        return Promise.reject('nome invalido');
+    if(validador.isLength(req.remedio, {min: 4}) === false)
+        return Promise.reject('Nome inválido');
+    
+    if(validador.isLength(req.registro + "", {min: 8, max: 12}) === false)
+        return Promise.reject('Numero de registro inválido');
+    
+    if(validador.isDecimal(req.preco + "", {force_decimal: false, decimal_digits: 2}) === false)
+        return Promise.reject('Este preço é inválido');
+    
+    if(validador.isLength(req.descricao, {min: 10,max: 50}) === false)
+        return Promise.reject('descrição inválida');
+
+    if(validador.isLength(req.produtora, {min: 8, max: 50}) === false)
+        return Promise.reject('Nome da produtora inválida');
+
     else
-        return nome;
+        return req;
 }
 
-async function validarNrRegistro(numero){
-
-    if(validador.isLength(numero + "", {min: 8, max: 12}) === false)
-        return Promise.reject('numero de registro invalido');
-    else
-        return numero;
-}
-
-async function validarPreco(valor){
-
-    if(validador.isDecimal(valor + "", {force_decimal: false, decimal_digits: 2}) === false)
-        return Promise.reject('O preço precisa ter duas casas decimais');
-    else 
-        return valor;
-}
-
-async function validarDescricao(desc){
-
-    if(validador.isLength(desc, {min: 10,max: 50}) === false)
-        return Promise.reject('descrição invalida');
-    else
-        return desc;
-}
-
-module.exports = { validarRegistro, validarNome, validarNrRegistro, validarPreco, validarDescricao };
+module.exports = { validarRegistro, validarCampoRemedios};

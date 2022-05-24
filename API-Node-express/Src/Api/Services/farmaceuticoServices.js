@@ -11,7 +11,7 @@ async function buscarRegistro(req){
         return req;
 }
 
-async function validarCampos(req){
+async function validarCamposFarmaceutico(req){
 
     if(validador.isLength(req.farmaceutico, {min: 4}) === false)
         return Promise.reject('É preciso informar um nome válido')
@@ -32,4 +32,4 @@ async function validarCampos(req){
         return req;
 }
 
-module.exports = {buscarRegistro, validarCampos};
+module.exports = {buscarRegistro, validarCamposFarmaceutico};

@@ -27,8 +27,12 @@ async function buscarMedicamentos(req, res){
 async function novoMedicamento(req, res){
 
     const validar = validationResult(req);
-    if(!validar.isEmpty())
-        return res.status(400).json({erro: validar.array()});
+    if(!validar.isEmpty()){
+        const  error = [];
+        validar.array().forEach(x => error.push({motivo: x.msg}));
+
+        return res.status(400).json({codigo: 400, error});
+    }
     else{
 
         // atributos do meu objeto JSON
@@ -69,8 +73,12 @@ async function apagarMedicamento(req, res){
 async function updateMedicamento(req, res){
 
     const validar = validationResult(req);
-    if(!validar.isEmpty())
-        return res.status(400).json({erro: validar.array()});
+    if(!validar.isEmpty()){
+        const errors = [];
+        validar.array().map(x => errors.push({motivo: x.msg}));
+
+        return res.status(400).json({codigo: 400, errors});
+    }
     else{
         // atributos do meu objeto JSON
         const {remedio} = req.body;
