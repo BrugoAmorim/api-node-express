@@ -62,4 +62,43 @@ async function deletarFarmaceutco(req, res){
     }
 }
 
-module.exports = { registrarFarmaceutico, buscarFarmaceuticos, deletarFarmaceutco };
+async function editarFarmaceutico(req, res){
+
+    const validar = validationResult(req);
+    if(!validar.isEmpty()){
+        const errors = [];
+        validar.array().map(x => errors.push({motivo: x.msg}));
+
+        return res.status(400).json({codigo: 400, errors});
+    }
+    else{
+        
+        let {farmaceutico} = req.body;
+        let {cpf} = req.body;
+        let {rg} = req.body;
+        let {nascimento} = req.body;
+        let {telefone} = req.body;
+
+        // No metodo update, primeiro entra os campos que eu quero alterar, seguido do registro que vai ser alterado
+        await tbFarmaceuticos.update(
+            {
+                nm_farmaceutico: farmaceutico,
+                ds_cpf: cpf,
+                ds_rg: rg,
+                dt_nascimento: nascimento,
+                nr_telfone: telefone,        
+            },
+            {
+                where: {
+                    id_farmaceutico: req.params.id
+                }
+            });
+
+        tbFarmaceuticos.findByPk(req.params.id).then((data) => {
+
+            return res.status(200).json(data);
+        });
+    }
+}
+
+module.exports = { registrarFarmaceutico, buscarFarmaceuticos, deletarFarmaceutco, editarFarmaceutico };

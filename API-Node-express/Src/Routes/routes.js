@@ -54,3 +54,10 @@ myapp.delete('/apagar-farmaceutico/:id',
         param('id').custom((data) => { return validacoes.buscarRegistro(data)}).withMessage()
     ],
     controlFarmaceutico.deletarFarmaceutco);
+
+myapp.put('/editar-informacoes/:id', 
+    [
+        param('id').custom((data) => { return validacoes.buscarRegistro(data) }).withMessage(),
+        body().custom((data) => { return validacoes.validarCampos(data)}).withMessage()
+    ],
+    controlFarmaceutico.editarFarmaceutico);
