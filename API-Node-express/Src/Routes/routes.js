@@ -40,19 +40,19 @@ myapp.get('/buscar-farmaceuticos', controlFarmaceutico.buscarFarmaceuticos);
 
 myapp.post('/reg-farmaceutico', 
     [
-        body().custom((data) => { return validacoes.validarCampos(data) }).withMessage(),
+        body().custom((data) => { return validacoes.validarCamposFarmaceutico(data) }).withMessage(),
     ],
     controlFarmaceutico.registrarFarmaceutico)
 
 myapp.delete('/apagar-farmaceutico/:id', 
     [
-        param('id').custom((data) => { return validacoes.buscarRegistro(data)}).withMessage()
+        param('id').custom((data) => { return validacoes.buscarRegistro(data) }).withMessage()
     ],
     controlFarmaceutico.deletarFarmaceutco);
 
 myapp.put('/editar-informacoes/:id', 
     [
         param('id').custom((data) => { return validacoes.buscarRegistro(data) }).withMessage(),
-        body().custom((data) => { return validacoes.validarCampos(data)}).withMessage()
+        body().custom((data) => { return validacoes.validarCamposFarmaceutico(data) } ).withMessage()
     ],
     controlFarmaceutico.editarFarmaceutico);

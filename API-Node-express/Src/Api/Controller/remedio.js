@@ -4,7 +4,8 @@ const myapp = require('../../app.js').myapp;
 myapp.use(express.json()); // faz com que minha API entenda objetos json
 
 const { validationResult } = require('express-validator');
-const Medicamentos = require('../Models/tbremedio');
+const Medicamentos = require('../Models/tbremedio.js');
+const conversorModelos = require('../Utils/conversorMedicamentos.js');
 
 async function buscarMedicamentos(req, res){
 
@@ -20,7 +21,9 @@ async function buscarMedicamentos(req, res){
             colecao.push(info);
         }
 
-        return res.status(200).json(colecao);
+        let caixote = conversorModelos.modelolistaMedicamentos(colecao);
+
+        return res.status(200).json(caixote);
     })
 }     
     
@@ -34,7 +37,6 @@ async function novoMedicamento(req, res){
         return res.status(400).json({codigo: 400, error});
     }
     else{
-
         // atributos do meu objeto JSON
         const {remedio} = req.body;
         const {preco} = req.body;
@@ -42,30 +44,43 @@ async function novoMedicamento(req, res){
         const {produtora} = req.body;
         const {registro} = req.body;
 
-        const informacoes = await Medicamentos.create({
+        await Medicamentos.create({
+
             nm_medicamento: remedio,
             vl_medicamento: preco,
             ds_medicamento: descricao,
             nm_produtora: produtora,
             nr_registro: registro
-        });
+        }).then((informacoes) => {
 
-        let caixote = informacoes;
-        return res.status(201).json(caixote);
-    }
+            let objRes = conversorModelos.modelounicoMedicamentos(informacoes);
+            return res.status(200).json(objRes);
+        })
+    }   
 };
 
 async function apagarMedicamento(req, res){
 
-    // a tabela medicamentos filtrará o registro que contem o id informado, logo após ele é apagado e uma mensagem é enviada informando que foi excluido com exito
     const validar = validationResult(req);
-    if(!validar.isEmpty())
-        return res.status(400).json({erro: validar.array()});
+    if(!validar.isEmpty()){
+
+        // cria um objeto errorResponse, ele retorna ao cliente o valor do parametro, tipo de erro e seu codigo de badrequest
+        let modelError = {};
+        validar.array().map((item) => {
+            
+            modelError.erro = item.msg;
+            modelError.valor = item.value;
+            modelError.codigo = 400;
+        });
+
+        return res.status(400).json(modelError);
+    }
     else
-    {
+    {   
+        // a tabela medicamentos filtrará o registro que contem o id informado, logo após ele é apagado e uma mensagem é enviada informando que foi excluido com exito
         await Medicamentos.destroy({ where: {id_medicamento: req.params.id} }).then(function(){
 
-            return res.status(200).json("Deletado com sucesso!");
+            return res.status(200).json({mensagem: "Deletado com sucesso!", codigo: 200});
         });
     }
 }
@@ -103,9 +118,10 @@ async function updateMedicamento(req, res){
         });
 
         // depois de atualizado, é exibido as informacoes do registro
-        Medicamentos.findAll({where: {id_medicamento: req.params.id}}).then((data) => {
+        Medicamentos.findByPk(req.params.id).then((data) => {
 
-            return res.status(200).json(data);
+            let modeloRes = conversorModelos.modelounicoMedicamentos(data);
+            return res.status(200).json(modeloRes);
         })
     }
 }

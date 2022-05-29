@@ -6,11 +6,17 @@ myapp.use(express.json());
 const { validationResult } = require('express-validator');
 const tbFarmaceuticos = require('../Models/tbfarmaceutico');
 
+// Utils farmaceutico
+let criarmodelos = require('../Utils/conversorFarmaceuticos.js');
+
+
 async function buscarFarmaceuticos(req, res){
 
     await tbFarmaceuticos.findAll().then((data) => {
 
-        return res.status(200).json(data);
+        let listafarmaceuticos = criarmodelos.modelolistafarmaceutico(data);
+
+        return res.status(200).json(listafarmaceuticos);
     })
 }
 
@@ -24,6 +30,7 @@ async function registrarFarmaceutico(req, res){
         return res.status(400).json({erro: errors, codigo: 400})
     }
     else{
+        // campos do meu objeto JSON request
         const {farmaceutico} = req.body;
         const {cpf} = req.body;
         const {rg} = req.body;
@@ -39,7 +46,8 @@ async function registrarFarmaceutico(req, res){
             nr_telfone: telefone
         }).then((data) => {
 
-            return res.status(201).json(data);
+            let objres = criarmodelos.modelounicofarmaceutico(data);
+            return res.status(201).json(objres);
         })
     }
 }
@@ -49,10 +57,19 @@ async function deletarFarmaceutco(req, res){
     const validar = validationResult(req);
 
     if(!validar.isEmpty()){
-        const errors = [];
-        validar.array().forEach(x => errors.push(x.msg));
+    
+        // cria um objeto ErrorResponse
+        let modelError = {};
 
-        return res.status(400).json({error: errors, codigo: 400});
+        // faz um mapeamento do modelo padrao badrequest e pega os valores necessarias para criar um modelo customizado
+        validar.array().map((item) => {
+
+            modelError.erro = item.msg;
+            modelError.valor = item.value;
+            modelError.codigo = 400;
+        })
+
+        return res.status(400).json(modelError);
     }
     else{
         await tbFarmaceuticos.destroy({ where: {id_farmaceutico: req.params.id}}).then(() => {
@@ -96,7 +113,8 @@ async function editarFarmaceutico(req, res){
 
         tbFarmaceuticos.findByPk(req.params.id).then((data) => {
 
-            return res.status(200).json(data);
+            let objresFarmaceutico = criarmodelos.modelounicofarmaceutico(data);
+            return res.status(200).json(objresFarmaceutico);
         });
     }
 }
