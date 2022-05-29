@@ -9,14 +9,21 @@ const tbFarmaceuticos = require('../Models/tbfarmaceutico');
 // Utils farmaceutico
 let criarmodelos = require('../Utils/conversorFarmaceuticos.js');
 
-
 async function buscarFarmaceuticos(req, res){
 
-    await tbFarmaceuticos.findAll().then((data) => {
+    await tbFarmaceuticos.findAll().then((colecao) => {
 
-        let listafarmaceuticos = criarmodelos.modelolistafarmaceutico(data);
+        // validador para verificar se há registros na table farmaceuticos
+        const validacoes = require('../Services/remedioServices.js');
+        let validarcolecao = validacoes.validarConsulta(colecao);
 
-        return res.status(200).json(listafarmaceuticos);
+        if(validarcolecao.codigo == 400)
+            return res.status(400).json(validarcolecao);
+        else{
+            
+            let listafarmaceuticos = criarmodelos.modelolistafarmaceutico(colecao);
+            return res.status(200).json(listafarmaceuticos);
+        }
     })
 }
 

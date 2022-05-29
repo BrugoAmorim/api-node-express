@@ -11,19 +11,20 @@ async function buscarMedicamentos(req, res){
 
     // Faz uma selecao de todos os registros da minha tabela
     Medicamentos.findAll().then((registros) => {
+        
+        // metodo que verifica se o numero de registros retornado no banco é zero
+        const validarGet = require('../Services/remedioServices.js');
+        let model = validarGet.validarConsulta(registros);
+        
+        // se retornar um codigo 400 do model, é retornado um badrequest ao client
+        if(model.codigo == 400)
+            return res.status(400).json(model);
+        else{
 
-        // esta variavel guardará todas as informacoes retornadas
-        let colecao = [];
-
-        for(let i = 0; i < registros.length; i++){
-
-            let info = registros[i];
-            colecao.push(info);
+            // converte o modelo table medicamentos em um formato customizado response
+            let caixote = conversorModelos.modelolistaMedicamentos(registros);
+            return res.status(200).json(caixote);
         }
-
-        let caixote = conversorModelos.modelolistaMedicamentos(colecao);
-
-        return res.status(200).json(caixote);
     })
 }     
     
@@ -64,7 +65,7 @@ async function apagarMedicamento(req, res){
     const validar = validationResult(req);
     if(!validar.isEmpty()){
 
-        // cria um objeto errorResponse, ele retorna ao cliente o valor do parametro, tipo de erro e seu codigo de badrequest
+        // cria um objeto errorResponse, ele retorna ao cliente o valor do parametro, tipo de erro e seu codigo de badrequest 
         let modelError = {};
         validar.array().map((item) => {
             

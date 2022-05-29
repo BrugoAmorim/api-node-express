@@ -34,4 +34,20 @@ async function validarCampoRemedios(req){
         return req;
 }
 
-module.exports = { validarRegistro, validarCampoRemedios};
+function validarConsulta(req){
+
+    let objetoRes;
+    if(req.length === 0){
+
+        objetoRes = {
+            erro: "Não foram encontrados nenhum registro",
+            codigo: 400
+        };
+
+        return objetoRes;
+    }
+
+    return req;
+}
+
+module.exports = { validarRegistro, validarCampoRemedios, validarConsulta };
