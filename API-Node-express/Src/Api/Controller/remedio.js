@@ -9,23 +9,53 @@ const conversorModelos = require('../Utils/conversorMedicamentos.js');
 
 async function buscarMedicamentos(req, res){
 
-    // Faz uma selecao de todos os registros da minha tabela
-    Medicamentos.findAll().then((registros) => {
-        
-        // metodo que verifica se o numero de registros retornado no banco é zero
-        const validarGet = require('../Services/remedioServices.js');
-        let model = validarGet.validarConsulta(registros);
-        
-        // se retornar um codigo 400 do model, é retornado um badrequest ao client
-        if(model.codigo == 400)
-            return res.status(400).json(model);
-        else{
+    // recebe o valor do parametro informado na url
+    let { nome } = req.query;
 
-            // converte o modelo table medicamentos em um formato customizado response
-            let caixote = conversorModelos.modelolistaMedicamentos(registros);
-            return res.status(200).json(caixote);
-        }
-    })
+    // se nao houver nenhum parametro informado, é retornado todos os registros do banco
+    if(nome === ""){
+    
+        // Faz uma selecao de todos os registros da minha tabela
+        Medicamentos.findAll().then((registros) => {
+            
+            // metodo que verifica se o numero de registros retornado no banco é zero
+            const validarGet = require('../Services/remedioServices.js');
+            let model = validarGet.validarConsulta(registros);
+            
+            // se retornar um codigo 400 do model, é retornado um badrequest ao client
+            if(model.codigo == 400)
+                return res.status(400).json(model);
+            else{
+
+                // converte o modelo table medicamentos em um formato customizado response
+                let caixote = conversorModelos.modelolistaMedicamentos(registros);
+                return res.status(200).json(caixote);
+            }
+        })
+    }
+    else{
+    
+        // Filtra os registros do banco de acordo com o nome informado
+        Medicamentos.findAll({
+
+            where: {nm_medicamento: nome}
+        }).then((registros) => {
+            
+            // metodo que verifica se o numero de registros retornado no banco é zero
+            const validarGet = require('../Services/remedioServices.js');
+            let model = validarGet.validarConsulta(registros);
+            
+            // se retornar um codigo 400 do model, é retornado um badrequest ao client
+            if(model.codigo == 400)
+                return res.status(400).json(model);
+            else{
+
+                // converte o modelo table medicamentos em um formato customizado response
+                let caixote = conversorModelos.modelolistaMedicamentos(registros);
+                return res.status(200).json(caixote);
+            }
+        })
+    }
 }     
     
 async function novoMedicamento(req, res){
