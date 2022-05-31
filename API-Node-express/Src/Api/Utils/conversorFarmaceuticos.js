@@ -7,7 +7,7 @@ function modelounicofarmaceutico(req){
         cpf: req.ds_cpf,
         rg: req.ds_rg, 
         datanascimento: req.dt_nascimento,
-        telefone: req.nr_telfone 
+        telefone: req.nr_telefone 
     }
 
     return Res;

@@ -18,7 +18,7 @@ async function validarCampoRemedios(req){
     if(validador.isLength(req.remedio, {min: 4}) === false)
         return Promise.reject('Nome inválido');
     
-    if(validador.isLength(req.registro + "", {min: 8, max: 12}) === false)
+    if(validador.isLength(req.registro, {min: 8, max: 12}) === false)
         return Promise.reject('Numero de registro inválido');
     
     if(validador.isDecimal(req.preco + "", {force_decimal: false, decimal_digits: 2}) === false)

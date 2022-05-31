@@ -26,11 +26,11 @@ const Farmaceuticos = banco.define('tb_farmaceuticos', {
         type: Sequelize.DATE,
         allowNull: false
     },
-    nr_telfone: {
+    nr_telefone: {
         type: Sequelize.STRING(30),
         allowNull: false
     }
 });
 
 module.exports = Farmaceuticos;
-//Farmaceuticos.sync({force: true});
+// Farmaceuticos.sync({force: true});

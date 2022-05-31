@@ -17,7 +17,7 @@ const Remedios = banco.define('tb_medicamentos', {
     vl_medicamento: {
         type: Sequelize.DECIMAL(15, 2),
         allowNull: false
-    },
+    },  
     ds_medicamento: {
         type: Sequelize.TEXT,
         allowNull: false
@@ -27,7 +27,7 @@ const Remedios = banco.define('tb_medicamentos', {
         allowNull: false
     },
     nr_registro: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING(14),
         allowNull: false
     }
 });

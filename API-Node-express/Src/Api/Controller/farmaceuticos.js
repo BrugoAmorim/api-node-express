@@ -50,7 +50,7 @@ async function registrarFarmaceutico(req, res){
             ds_cpf: cpf,
             ds_rg: rg,
             dt_nascimento: nascimento,
-            nr_telfone: telefone
+            nr_telefone: telefone
         }).then((data) => {
 
             let objres = criarmodelos.modelounicofarmaceutico(data);
@@ -110,7 +110,7 @@ async function editarFarmaceutico(req, res){
                 ds_cpf: cpf,
                 ds_rg: rg,
                 dt_nascimento: nascimento,
-                nr_telfone: telefone,        
+                nr_telefone: telefone,        
             },
             {
                 where: {
