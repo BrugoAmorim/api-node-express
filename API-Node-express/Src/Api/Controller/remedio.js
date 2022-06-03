@@ -22,9 +22,9 @@ async function buscarMedicamentos(req, res){
             const validarGet = require('../Services/remedioServices.js');
             let model = validarGet.validarConsulta(registros);
             
-            // se retornar um codigo 400 do model, é retornado um badrequest ao client
-            if(model.codigo == 400)
-                return res.status(400).json(model);
+            // se retornar um codigo 404 do model, é retornado um badrequest ao client
+            if(model.codigo == 404)
+                return res.status(404).json(model);
             else{
 
                 // converte o modelo table medicamentos em um formato customizado response
@@ -45,9 +45,9 @@ async function buscarMedicamentos(req, res){
             const validarGet = require('../Services/remedioServices.js');
             let model = validarGet.validarConsulta(registros);
             
-            // se retornar um codigo 400 do model, é retornado um badrequest ao client
-            if(model.codigo == 400)
-                return res.status(400).json(model);
+            // se retornar um codigo 404 do model, é retornado um badrequest ao client
+            if(model.codigo == 404)
+                return res.status(404).json(model);
             else{
 
                 // converte o modelo table medicamentos em um formato customizado response

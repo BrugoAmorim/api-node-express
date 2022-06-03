@@ -41,7 +41,7 @@ function validarConsulta(req){
 
         objetoRes = {
             erro: "Não foram encontrados nenhum registro",
-            codigo: 400
+            codigo: 404
         };
 
         return objetoRes;
